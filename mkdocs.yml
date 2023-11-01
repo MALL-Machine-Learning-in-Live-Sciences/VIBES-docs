@@ -1,0 +1,8 @@
+site_name: VIBES
+
+copyright: Copyright &copy; 2023 - 2024. MALL - Machine Learning for Live Sciences Lab
+
+nav:
+   - Home: index.md
+   - Citation: citation.md
+theme: readthedocs
