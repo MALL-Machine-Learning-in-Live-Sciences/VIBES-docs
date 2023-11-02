@@ -31,8 +31,7 @@ require(phyloseq)
 library(VIBES)
 ```
 
-This example works with a phyloseq object. In this case the phyloseq
-object is made up of the counts of 1657 microbiome profiles.
+The package works with three types of input data: matrix, dataframe and phyloseq. The following example works with a phyloseq object from the PRJNA208535 cohort. In this case the phyloseq object is made up of the counts of 1657 microbiome profiles.
 
 ``` r
 data("PRJNA208535")
