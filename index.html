@@ -12,7 +12,7 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Home";
+        var mkdocs_page_name = "What is VIBES?";
         var mkdocs_page_input_path = "index.md";
         var mkdocs_page_url = null;
       </script>
@@ -40,25 +40,29 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href=".">Home</a>
+                <li class="toctree-l1 current"><a class="reference internal current" href=".">What is VIBES?</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a>
+    <li class="toctree-l2"><a class="reference internal" href="#original-data">Original data</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#discovery-cohort">Discovery cohort</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a>
+    <li class="toctree-l3"><a class="reference internal" href="#validation-cohorts">Validation cohorts</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#interpreting-the-results">Interpreting the results</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#contributing">Contributing</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#license">License</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#contact">Contact</a>
+        </ul>
     </li>
     </ul>
                 </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="userguide/">VIBES User Guide</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="citation/">Citation</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="contact/">Contact</a>
                 </li>
               </ul>
       </div>
@@ -75,7 +79,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Home</li>
+      <li class="breadcrumb-item active">What is VIBES?</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -101,125 +105,32 @@ Lactobacillus_iners, Prevotella_amnii, Prevotella_disiens,
 Staphylococcus_haemolyticus, Veillonella_montpellierensis,
 Alistipes_finegoldii, Gardnerella_vaginalis, Mycoplasma_hominis,
 Mobiluncus_mulieris, Prevotella_buccalis and Sneathia_sanguinegens.</p>
-<h2 id="installation">Installation</h2>
-<p>The installation of <code>VIBES</code> is done via GitHub. For this you need to
-install the <code>devtools</code> package via the function <code>install_github</code>. In
-addition <code>VIBES</code> has dependencies via Bioconductor so it will be
-necessary to install the associated <code>BiocManager</code> package. This will
-allow you to install the <code>phyloseq</code> package.</p>
-<pre><code class="language-r"># Installation requires devtools and bioconductor, please use the following commands
-if (!requireNamespace(&quot;BiocManager&quot;))
-    install.packages(&quot;BiocManager&quot;)
-BiocManager::install()
-install.packages(&quot;devtools&quot;)
-# Before installing VIBES, you need also to install the dependent package `phyloseq`
-BiocManager::install(&quot;phyloseq&quot;)
-# Install VIBES from github
-devtools::install_github(&quot;DiegoFE94/VIBES&quot;)
-</code></pre>
-<h2 id="usage">Usage</h2>
-<p>Before starting the demonstration, you need to load the following
-packages:</p>
-<pre><code class="language-r">require(phyloseq)
-#&gt; Loading required package: phyloseq
-library(VIBES)
-</code></pre>
-<p>This example works with a phyloseq object. In this case the phyloseq
-object is made up of the counts of 1657 microbiome profiles.</p>
-<pre><code class="language-r">data(&quot;PRJNA208535&quot;)
-# Load a pseq with 1657 samples 22 species and 7 taxonomic ranks
-print(PRJNA208535)
-#&gt; phyloseq-class experiment-level object
-#&gt; otu_table()   OTU Table:         [ 6284 taxa and 1657 samples ]
-#&gt; sample_data() Sample Data:       [ 1657 samples by 25 sample variables ]
-#&gt; tax_table()   Taxonomy Table:    [ 6284 taxa by 7 taxonomic ranks ]
-#&gt; refseq()      DNAStringSet:      [ 6284 reference sequences ]
-# Note that the otu table is made up of the counts
-otu_table(PRJNA208535)[1:5,1:5]
-#&gt; OTU Table:          [5 taxa and 5 samples]
-#&gt;                      taxa are rows
-#&gt;      SRR902006 SRR902881 SRR903842 SRR903941 SRR903945
-#&gt; ASV1         0         0         0         0         0
-#&gt; ASV2    188890      3623         0         0         0
-#&gt; ASV3         0         0         0         0         0
-#&gt; ASV4         0         0      3345      1709       590
-#&gt; ASV5         0         0         0         0         0
-tax_table(PRJNA208535)[1:5,6:7]
-#&gt; Taxonomy Table:     [5 taxa by 2 taxonomic ranks]:
-#&gt;      Genus           Species              
-#&gt; ASV1 &quot;Lactobacillus&quot; &quot;Lactobacillus_iners&quot;
-#&gt; ASV2 &quot;Lactobacillus&quot; &quot;Lactobacillus_iners&quot;
-#&gt; ASV3 &quot;Lactobacillus&quot; &quot;Lactobacillus_iners&quot;
-#&gt; ASV4 &quot;Lactobacillus&quot; &quot;Lactobacillus_iners&quot;
-#&gt; ASV5 &quot;Lactobacillus&quot; NA
-</code></pre>
-<p>Before running the package, the clinical data is made up of 25
-variables. Once the package is run, it will return 5 more variables that
-correspond to the probability and membership of each cluster.</p>
-<pre><code class="language-r"># Sample data has no info about clusters
-sample_data(PRJNA208535)[1:5,20:25]
-#&gt;           VAG_ITCH VAG_BURN VAG_DIS MENSTRU1 MENSTRU2 MENSTRU3
-#&gt; SRR902006       NA       NA      NA       NA       NA       NA
-#&gt; SRR902881        0        0       0       NA       NA       NA
-#&gt; SRR903842        0        0       0       NA       NA       NA
-#&gt; SRR903941        0        0       0       NA       NA       NA
-#&gt; SRR903945        0        0       0       NA       NA       NA
-# Compute clusterization
-pseq_w_clusters &lt;- get_clusters(object = PRJNA208535)
-#&gt; Remember that the species names must be in the following format: Genus_species
-# Check sample data of the new object 'pseq_w_clusters'
-sample_data(pseq_w_clusters)[1:5,25:30]
-#&gt;           MENSTRU3        VCS.I    VCS.II      VCS.III       VCS.IV p_cluster
-#&gt; SRR902006       NA 2.883447e-18 0.9998651 3.257710e-06 1.315948e-04    VCS-II
-#&gt; SRR902881       NA 7.292814e-24 1.0000000 9.895719e-12 8.154546e-10    VCS-II
-#&gt; SRR903842       NA 2.211632e-20 1.0000000 3.602075e-10 1.755376e-08    VCS-II
-#&gt; SRR903941       NA 4.992614e-26 1.0000000 1.369296e-10 8.586513e-09    VCS-II
-#&gt; SRR903945       NA 3.820220e-24 0.9941218 1.527713e-07 5.878046e-03    VCS-II
-</code></pre>
-<h2 id="interpreting-the-results">Interpreting the results</h2>
-<p>The <code>get_clusters()</code> function returns 5 variables/columns to the
-original object:</p>
-<ol>
-<li>VCS.I: probability (0-1) of belonging to cluster VCS-I.</li>
-<li>VCS.II: probability (0-1) of belonging to cluster VCS-II.</li>
-<li>VCS.III: probability (0-1) of belonging to cluster VCS-III.</li>
-<li>VCS.IV: probability (0-1) of belonging to cluster VCS-IV.</li>
-<li>p_cluster: label (VCS-I, VCS-II, VCS-III, VCS-IV) indicating to
-    which cluster the profile belongs</li>
-</ol>
-<h2 id="contributing">Contributing</h2>
-<p>We welcome contributions to <code>VIBES</code>. Please submit a pull request or
-open an issue on the GitHub repository.</p>
-<h2 id="license">License</h2>
-<p><code>VIBES</code> is released under the MIT License.</p>
-<h2 id="contact">Contact</h2>
-<p>If you have any questions, comments, or suggestions, please feel free to
-contact us at:</p>
+<h2 id="original-data">Original data</h2>
+<p><code>VIBES</code> used five different 16S rRNA cohorts from vaginal environment to find the clusters.</p>
+<h3 id="discovery-cohort">Discovery cohort</h3>
 <ul>
-<li>Diego Fernández Edreira<ul>
-<li>Email: <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#100;&#105;&#101;&#103;&#111;&#46;&#102;&#101;&#100;&#114;&#101;&#105;&#114;&#97;&#64;&#117;&#100;&#99;&#46;&#101;&#115;">&#100;&#105;&#101;&#103;&#111;&#46;&#102;&#101;&#100;&#114;&#101;&#105;&#114;&#97;&#64;&#117;&#100;&#99;&#46;&#101;&#115;</a></li>
-<li>Twitter: <a href="https://twitter.com/diego_edreira">@diego_edreira</a></li>
-<li>GitHub: <a href="https://github.com/DiegoFE94/">DiegoFE94</a></li>
+<li>SRA022855: Vaginal bacterial communities of 396 North American women (Baltimore and Atlanta), between the ages of 12 and 45 (mean age: 30). Women included in the study self-identified as African American (n=104), White (n=98), Hispanic (n=97), and Asian (n=97). <a href="http://dx.doi.org/10.1073/pnas.1002611107">Publication</a></li>
 </ul>
+<h3 id="validation-cohorts">Validation cohorts</h3>
+<ul>
+<li>
+<p>SRA051298: Vaginal bacterial communities of 220 North American women (Seattle), between the ages of 18 and 57 (mean age: 29). Women included in the study self-identified as African American (n=75), White (n=97), Asian (n=15), and Others (n=33). <a href="https://doi.org/10.1371/journal.pone.0037818">Publication</a></p>
 </li>
-<li>Jose Liñares Blanco, PhD<ul>
-<li>Email: <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#106;&#46;&#108;&#105;&#110;&#97;&#114;&#101;&#115;&#64;&#117;&#100;&#99;&#46;&#101;&#115;">&#106;&#46;&#108;&#105;&#110;&#97;&#114;&#101;&#115;&#64;&#117;&#100;&#99;&#46;&#101;&#115;</a></li>
-<li>Twitter: <a href="https://twitter.com/8JoseLinares">@8JoseLinares</a></li>
-<li>GitHub: <a href="https://github.com/jlinaresb">jlinaresb</a></li>
-</ul>
+<li>
+<p>PRJNA208535: Vaginal bacterial communities of 25 North American women (Birmingham) over 10 weeks (1657 16S raw samples on repo.), between the ages of 19 and 45 (mean age: 27). Women included in the study self-identified as African American (n=20), and White (n=5). <a href="https://doi.org/10.1186/2049-2618-1-29">Publication</a></p>
 </li>
-<li>Carlos Fernández Lozano, PhD<ul>
-<li>Email: <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#99;&#97;&#114;&#108;&#111;&#115;&#46;&#102;&#101;&#114;&#110;&#97;&#110;&#100;&#101;&#122;&#64;&#117;&#100;&#99;&#46;&#101;&#115;">&#99;&#97;&#114;&#108;&#111;&#115;&#46;&#102;&#101;&#114;&#110;&#97;&#110;&#100;&#101;&#122;&#64;&#117;&#100;&#99;&#46;&#101;&#115;</a></li>
-<li>Twitter: <a href="https://twitter.com/cafernandezlo">@cafernandezlo</a></li>
-<li>GitHub: <a href="https://github.com/cafernandezlo">cafernandezlo</a></li>
-</ul>
+<li>
+<p>PRJNA797778: Vaginal bacterial communities of 39 North American women (Baltimore) over 10 weeks (220 16S raw samples on repo.), between the ages of 19 and 45. Women included in the study self-identified as African American (n=24), White (n=10), Hispanic (n=4), and Asian (n=1). <a href="https://doi.org/10.1186/s13059-022-02635-9">Publication</a></p>
+</li>
+<li>
+<p>PRJNA302078: Vaginal bacterial communities of 65 Chinese women (Beijing) over 3 time points: pretreatment, one week after treatment and one month after treatment with metronidazole (201 16S raw samples on repo.), between the ages of 18 and 53. <a href="https://doi.org/10.1038/srep26674">Publication</a></p>
 </li>
 </ul>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="citation/" class="btn btn-neutral float-right" title="Citation">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="userguide/" class="btn btn-neutral float-right" title="VIBES User Guide">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -244,7 +155,7 @@ contact us at:</p>
     
     
     
-      <span><a href="citation/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="userguide/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
@@ -264,5 +175,5 @@ contact us at:</p>
 
 <!--
 MkDocs version : 1.5.3
-Build Date UTC : 2023-11-01 18:43:10.536771+00:00
+Build Date UTC : 2023-11-02 08:38:29.921965+00:00
 -->
