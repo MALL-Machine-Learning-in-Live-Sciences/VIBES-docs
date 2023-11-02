@@ -3,6 +3,8 @@ site_name: VIBES
 copyright: Copyright &copy; 2023 - 2024. MALL - Machine Learning for Live Sciences Lab
 
 nav:
-   - Home: index.md
+   - What is VIBES?: index.md
+   - VIBES User Guide: userguide.md
    - Citation: citation.md
+   - Contact: contact.md
 theme: readthedocs

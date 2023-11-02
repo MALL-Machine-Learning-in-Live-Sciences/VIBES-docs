@@ -19,130 +19,24 @@ Staphylococcus_haemolyticus, Veillonella_montpellierensis,
 Alistipes_finegoldii, Gardnerella_vaginalis, Mycoplasma_hominis,
 Mobiluncus_mulieris, Prevotella_buccalis and Sneathia_sanguinegens.
 
-## Installation
+## Original data
 
-The installation of `VIBES` is done via GitHub. For this you need to
-install the `devtools` package via the function `install_github`. In
-addition `VIBES` has dependencies via Bioconductor so it will be
-necessary to install the associated `BiocManager` package. This will
-allow you to install the `phyloseq` package.
+`VIBES` used five different 16S rRNA cohorts from vaginal environment to find the clusters.
 
-``` r
-# Installation requires devtools and bioconductor, please use the following commands
-if (!requireNamespace("BiocManager"))
-    install.packages("BiocManager")
-BiocManager::install()
-install.packages("devtools")
-# Before installing VIBES, you need also to install the dependent package `phyloseq`
-BiocManager::install("phyloseq")
-# Install VIBES from github
-devtools::install_github("DiegoFE94/VIBES")
-```
+### Discovery cohort
 
-## Usage
+- SRA022855: Vaginal bacterial communities of 396 North American women (Baltimore and Atlanta), between the ages of 12 and 45 (mean age: 30). Women included in the study self-identified as African American (n=104), White (n=98), Hispanic (n=97), and Asian (n=97). [Publication](http://dx.doi.org/10.1073/pnas.1002611107)
 
-Before starting the demonstration, you need to load the following
-packages:
+### Validation cohorts
+ 
+- SRA051298: Vaginal bacterial communities of 220 North American women (Seattle), between the ages of 18 and 57 (mean age: 29). Women included in the study self-identified as African American (n=75), White (n=97), Asian (n=15), and Others (n=33). [Publication](https://doi.org/10.1371/journal.pone.0037818)
+ 
+- PRJNA208535: Vaginal bacterial communities of 25 North American women (Birmingham) over 10 weeks (1657 16S raw samples on repo.), between the ages of 19 and 45 (mean age: 27). Women included in the study self-identified as African American (n=20), and White (n=5). [Publication](https://doi.org/10.1186/2049-2618-1-29)
+ 
+- PRJNA797778: Vaginal bacterial communities of 39 North American women (Baltimore) over 10 weeks (220 16S raw samples on repo.), between the ages of 19 and 45. Women included in the study self-identified as African American (n=24), White (n=10), Hispanic (n=4), and Asian (n=1). [Publication](https://doi.org/10.1186/s13059-022-02635-9)
+ 
+- PRJNA302078: Vaginal bacterial communities of 65 Chinese women (Beijing) over 3 time points: pretreatment, one week after treatment and one month after treatment with metronidazole (201 16S raw samples on repo.), between the ages of 18 and 53. [Publication](https://doi.org/10.1038/srep26674)
 
-``` r
-require(phyloseq)
-#> Loading required package: phyloseq
-library(VIBES)
-```
 
-This example works with a phyloseq object. In this case the phyloseq
-object is made up of the counts of 1657 microbiome profiles.
 
-``` r
-data("PRJNA208535")
-# Load a pseq with 1657 samples 22 species and 7 taxonomic ranks
-print(PRJNA208535)
-#> phyloseq-class experiment-level object
-#> otu_table()   OTU Table:         [ 6284 taxa and 1657 samples ]
-#> sample_data() Sample Data:       [ 1657 samples by 25 sample variables ]
-#> tax_table()   Taxonomy Table:    [ 6284 taxa by 7 taxonomic ranks ]
-#> refseq()      DNAStringSet:      [ 6284 reference sequences ]
-# Note that the otu table is made up of the counts
-otu_table(PRJNA208535)[1:5,1:5]
-#> OTU Table:          [5 taxa and 5 samples]
-#>                      taxa are rows
-#>      SRR902006 SRR902881 SRR903842 SRR903941 SRR903945
-#> ASV1         0         0         0         0         0
-#> ASV2    188890      3623         0         0         0
-#> ASV3         0         0         0         0         0
-#> ASV4         0         0      3345      1709       590
-#> ASV5         0         0         0         0         0
-tax_table(PRJNA208535)[1:5,6:7]
-#> Taxonomy Table:     [5 taxa by 2 taxonomic ranks]:
-#>      Genus           Species              
-#> ASV1 "Lactobacillus" "Lactobacillus_iners"
-#> ASV2 "Lactobacillus" "Lactobacillus_iners"
-#> ASV3 "Lactobacillus" "Lactobacillus_iners"
-#> ASV4 "Lactobacillus" "Lactobacillus_iners"
-#> ASV5 "Lactobacillus" NA
-```
 
-Before running the package, the clinical data is made up of 25
-variables. Once the package is run, it will return 5 more variables that
-correspond to the probability and membership of each cluster.
-
-``` r
-# Sample data has no info about clusters
-sample_data(PRJNA208535)[1:5,20:25]
-#>           VAG_ITCH VAG_BURN VAG_DIS MENSTRU1 MENSTRU2 MENSTRU3
-#> SRR902006       NA       NA      NA       NA       NA       NA
-#> SRR902881        0        0       0       NA       NA       NA
-#> SRR903842        0        0       0       NA       NA       NA
-#> SRR903941        0        0       0       NA       NA       NA
-#> SRR903945        0        0       0       NA       NA       NA
-# Compute clusterization
-pseq_w_clusters <- get_clusters(object = PRJNA208535)
-#> Remember that the species names must be in the following format: Genus_species
-# Check sample data of the new object 'pseq_w_clusters'
-sample_data(pseq_w_clusters)[1:5,25:30]
-#>           MENSTRU3        VCS.I    VCS.II      VCS.III       VCS.IV p_cluster
-#> SRR902006       NA 2.883447e-18 0.9998651 3.257710e-06 1.315948e-04    VCS-II
-#> SRR902881       NA 7.292814e-24 1.0000000 9.895719e-12 8.154546e-10    VCS-II
-#> SRR903842       NA 2.211632e-20 1.0000000 3.602075e-10 1.755376e-08    VCS-II
-#> SRR903941       NA 4.992614e-26 1.0000000 1.369296e-10 8.586513e-09    VCS-II
-#> SRR903945       NA 3.820220e-24 0.9941218 1.527713e-07 5.878046e-03    VCS-II
-```
-
-## Interpreting the results
-
-The `get_clusters()` function returns 5 variables/columns to the
-original object:
-
-1.  VCS.I: probability (0-1) of belonging to cluster VCS-I.
-2.  VCS.II: probability (0-1) of belonging to cluster VCS-II.
-3.  VCS.III: probability (0-1) of belonging to cluster VCS-III.
-4.  VCS.IV: probability (0-1) of belonging to cluster VCS-IV.
-5.  p_cluster: label (VCS-I, VCS-II, VCS-III, VCS-IV) indicating to
-    which cluster the profile belongs
-
-## Contributing
-
-We welcome contributions to `VIBES`. Please submit a pull request or
-open an issue on the GitHub repository.
-
-## License
-
-`VIBES` is released under the MIT License.
-
-## Contact
-
-If you have any questions, comments, or suggestions, please feel free to
-contact us at:
-
-- Diego Fernández Edreira
-    - Email: <diego.fedreira@udc.es>
-    - Twitter: [@diego_edreira](https://twitter.com/diego_edreira)
-    - GitHub: [DiegoFE94](https://github.com/DiegoFE94/)
-- Jose Liñares Blanco, PhD
-    - Email: <j.linares@udc.es>
-    - Twitter: [@8JoseLinares](https://twitter.com/8JoseLinares)
-    - GitHub: [jlinaresb](https://github.com/jlinaresb)
-- Carlos Fernández Lozano, PhD
-    - Email: <carlos.fernandez@udc.es>
-    - Twitter: [@cafernandezlo](https://twitter.com/cafernandezlo)
-    - GitHub: [cafernandezlo](https://github.com/cafernandezlo)
