@@ -116,7 +116,6 @@ data(&quot;PRJNA302078&quot;)
 pseq = tax_glom(PRJNA302078, taxrank = &quot;Species&quot;)
 pseq@sam_data$visits = as.numeric(sapply(strsplit(pseq@sam_data$sample_alias, &quot;D&quot;), &quot;[&quot;, 2))
 pseq = subset_samples(pseq, visits==0)
-print(pseq)
 </code></pre>
 <h2 id="data-transformation">Data Transformation</h2>
 <ul>
@@ -153,9 +152,8 @@ otus_vibes &lt;- data.frame(
 </code></pre>
 <h2 id="machine-learning-prediction">Machine Learning prediction</h2>
 <ul>
-<li>Three classification tasks are defined:</li>
+<li>Two classification tasks are defined:</li>
 <li><code>otus_task</code> uses PCA-transformed microbiome data to predict the <em>status</em> variable with a positive class of <em>Cured</em>.</li>
-<li><code>vibes_task</code> uses additional features from the <code>VIBES</code> model to predict the <em>status</em> variable with a positive class of <em>Cured</em>.</li>
 <li><code>otus_vibes_task</code> combines the PCA-transformed microbiome data with <code>VIBES</code> features to predict the <em>status</em> variable with a positive class of <em>Cured</em>.</li>
 <li>The code uses the <code>classif.ranger</code> learner for classification tasks, configured to predict probabilities.</li>
 <li>Cross-validation with 4 folds due to limited sample size is employed as the outer resampling strategy.</li>
@@ -190,6 +188,7 @@ bmr = benchmark(design)
 autoplot(bmr, measure = msr(&quot;classif.auc&quot;)) + ylim(c(0,1))
 </code></pre>
 <p><img alt="" src="../img/usecase.png" /></p>
+<p>We can see how the inclusion of VIBES features outperform the prediction task.</p>
               
             </div>
           </div><footer>
