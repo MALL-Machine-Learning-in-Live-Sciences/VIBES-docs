@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Use case - VIBES</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Use case";
+        var mkdocs_page_input_path = "usecase.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> VIBES
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">What is VIBES?</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../userguide/">VIBES User Guide</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Use case</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#data">Data</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#data-transformation">Data Transformation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#machine-learning-prediction">Machine Learning prediction</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../citation/">Citation</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../contact/">Contact</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">VIBES</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Use case</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="vibes-use-case">VIBES Use Case</h1>
+<p>This code demonstrates a workflow to take advange of <code>VIBES</code> funcionality to go further in our microbiome analysis. <code>VIBES</code> output will be used for a Machine Learning classification task, in this case to predict the response to treatment. We used  PRJNA302078 included in <code>VIBES</code> to run the analysis. The downstream analysis based on ML will be performed with <a href="https://mlr3.mlr-org.com/">mlr3</a> package. In summary, the code processes microbiome data, applies dimensionality reduction, and performs classification using the <code>classif.ranger</code> learner. It also includes benchmarking and visualization of classification performance.</p>
+<pre><code class="language-r">require(VIBES)
+
+require(ggplot2)
+require(PCAtools)
+require(phyloseq)
+require(dplyr)
+require(microbiome)
+
+require(mlr3)
+require(mlr3learners)
+require(mlr3benchmark)
+require(mlr3viz)
+</code></pre>
+<h2 id="data">Data</h2>
+<ul>
+<li>The microbiome data is obtained from the <code>PRJNA302078</code> dataset.</li>
+<li>The code performs preprocessing on the data, focusing on the taxonomic rank <em>Species</em>.</li>
+<li>In order to predict treatment response based on pre-treatment data, we format the sample_data and keep only those samples at baseline.</li>
+</ul>
+<pre><code class="language-r"># get data and preprocess
+data(&quot;PRJNA302078&quot;)
+pseq = tax_glom(PRJNA302078, taxrank = &quot;Species&quot;)
+pseq@sam_data$visits = as.numeric(sapply(strsplit(pseq@sam_data$sample_alias, &quot;D&quot;), &quot;[&quot;, 2))
+pseq = subset_samples(pseq, visits==0)
+print(pseq)
+</code></pre>
+<h2 id="data-transformation">Data Transformation</h2>
+<ul>
+<li>The code uses Principal Component Analysis (PCA) to reduce the dimensionality of the microbiome data.</li>
+<li>We used <code>VIBES</code> to extract the probabilities of belonging to each cluster. These variables will be used later as predictive variables.</li>
+</ul>
+<pre><code class="language-r"># Calculate VIBES
+vibes &lt;- get_VIBES(object = pseq, column = 7)
+otus &lt;- t(vibes@otu_table@.Data)
+
+# otus data
+otus_d &lt;- data.frame(
+  microbiome::transform(otus, 'clr'),
+  status = vibes@sam_data$status)
+
+# get pca
+pca &lt;- PCAtools::pca(mat = otus_d %&gt;% select(-c(status)) %&gt;% t())
+otus_pca &lt;- pca$rotated[, 1:3] %&gt;% mutate(status = as.factor(otus_d$status))
+
+# vibes data 
+vibes_d &lt;- data.frame(
+  VCS.I = vibes@sam_data$VCS.I,
+  VCS.I = vibes@sam_data$VCS.II,
+  VCS.I = vibes@sam_data$VCS.III,
+  VCS.I = vibes@sam_data$VCS.IV,
+  status = vibes@sam_data$status
+)
+
+# otus + vibes
+otus_vibes &lt;- data.frame(
+  otus_pca,
+  vibes_d %&gt;% select(-c(status))
+)
+</code></pre>
+<h2 id="machine-learning-prediction">Machine Learning prediction</h2>
+<ul>
+<li>Three classification tasks are defined:</li>
+<li><code>otus_task</code> uses PCA-transformed microbiome data to predict the <em>status</em> variable with a positive class of <em>Cured</em>.</li>
+<li><code>vibes_task</code> uses additional features from the <code>VIBES</code> model to predict the <em>status</em> variable with a positive class of <em>Cured</em>.</li>
+<li><code>otus_vibes_task</code> combines the PCA-transformed microbiome data with <code>VIBES</code> features to predict the <em>status</em> variable with a positive class of <em>Cured</em>.</li>
+<li>The code uses the <code>classif.ranger</code> learner for classification tasks, configured to predict probabilities.</li>
+<li>Cross-validation with 4 folds due to limited sample size is employed as the outer resampling strategy.</li>
+<li>It runs the benchmark, evaluating the classification performance of the learner.</li>
+<li>The results are visualized using the area under the curve (AUC) measure.</li>
+</ul>
+<pre><code class="language-r"># Machine Learning
+otus_task &lt;- TaskClassif$new(id = &quot;asv&quot;,
+                        backend = otus_pca,
+                        target = &quot;status&quot;,
+                        positive = &quot;Cured&quot;)
+
+otus_vibes_task &lt;- TaskClassif$new(id = &quot;asv_vibes&quot;,
+                             backend = otus_vibes,
+                             target = &quot;status&quot;,
+                             positive = &quot;Cured&quot;)
+
+tasks &lt;- list(otus_task, otus_vibes_task)
+
+# Make learner
+learner &lt;- lrn(&quot;classif.ranger&quot;, predict_type = &quot;prob&quot;)
+
+# outer resampling
+set.seed(12345)
+outer &lt;- rsmp(&quot;cv&quot;, folds = 4)
+
+# Run benchmark
+design = benchmark_grid(tasks, learner, outer)
+bmr = benchmark(design)
+
+# Plotting
+autoplot(bmr, measure = msr(&quot;classif.auc&quot;)) + ylim(c(0,1))
+</code></pre>
+<p><img alt="" src="../img/usecase.png" /></p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../userguide/" class="btn btn-neutral float-left" title="VIBES User Guide"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../citation/" class="btn btn-neutral float-right" title="Citation">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>Copyright &copy; 2023 - 2024. MALL - Machine Learning for Live Sciences Lab</p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../userguide/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../citation/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

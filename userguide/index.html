@@ -56,6 +56,10 @@
                 </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../usecase/">Use case</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../citation/">Citation</a>
                 </li>
               </ul>
@@ -138,9 +142,7 @@ tax_table(PRJNA208535)[1:5,6:7]
 #&gt; ASV4 &quot;Lactobacillus&quot; &quot;Lactobacillus_iners&quot;
 #&gt; ASV5 &quot;Lactobacillus&quot; NA
 </code></pre>
-<p>Before running the package, the clinical data is made up of 25
-variables. Once the package is run, it will return 5 more variables that
-correspond to the probability and membership of each cluster.</p>
+<p>Before running the package, the clinical data is made up of 25 variables, the last six are:</p>
 <pre><code class="language-r"># Sample data has no info about clusters
 sample_data(PRJNA208535)[1:5,20:25]
 #&gt;           VAG_ITCH VAG_BURN VAG_DIS MENSTRU1 MENSTRU2 MENSTRU3
@@ -149,10 +151,20 @@ sample_data(PRJNA208535)[1:5,20:25]
 #&gt; SRR903842        0        0       0       NA       NA       NA
 #&gt; SRR903941        0        0       0       NA       NA       NA
 #&gt; SRR903945        0        0       0       NA       NA       NA
-# Compute clusterization
-pseq_w_clusters &lt;- get_clusters(object = PRJNA208535)
+</code></pre>
+<p>The main function of <code>VIBES</code> is <code>get_VIBES</code>. This function has two parameters:</p>
+<ul>
+<li>object: 16S rRNA data in a phyloseq, matrix or a data frame. For matrix and data frames, samples in rows and species in columns.</li>
+<li>column: only for phyloseq objects. Column number occupied by the taxonomic rank <em>Species</em>. Default value is the last column.</li>
+</ul>
+<pre><code class="language-r"># Compute clusterization
+pseq_w_clusters &lt;- get_VIBES(object = PRJNA208535)
 #&gt; Remember that the species names must be in the following format: Genus_species
-# Check sample data of the new object 'pseq_w_clusters'
+</code></pre>
+<p><code>get_VIBES()</code> returns an object (<code>pseq_w_clusters</code>) of the same type as the input, but with 5 new columns.</p>
+<h2 id="interpreting-the-results">Interpreting the results</h2>
+<p>The object returned by the <code>get_VIBES()</code> function contains the probability (ranging from 0 to 1) of membership of each sample to each of the four clusters (<code>VCS.I</code>, <code>VCS.II</code>, <code>VCS.III</code> and <code>VCS.IV</code>), as well as a final column (<code>p_cluster</code>) with the assigned label.</p>
+<pre><code class="language-r"># Check sample data of the new object 'pseq_w_clusters'
 sample_data(pseq_w_clusters)[1:5,25:30]
 #&gt;           MENSTRU3        VCS.I    VCS.II      VCS.III       VCS.IV p_cluster
 #&gt; SRR902006       NA 2.883447e-18 0.9998651 3.257710e-06 1.315948e-04    VCS-II
@@ -161,23 +173,12 @@ sample_data(pseq_w_clusters)[1:5,25:30]
 #&gt; SRR903941       NA 4.992614e-26 1.0000000 1.369296e-10 8.586513e-09    VCS-II
 #&gt; SRR903945       NA 3.820220e-24 0.9941218 1.527713e-07 5.878046e-03    VCS-II
 </code></pre>
-<h2 id="interpreting-the-results">Interpreting the results</h2>
-<p>The <code>get_clusters()</code> function returns 5 variables/columns to the
-original object:</p>
-<ol>
-<li>VCS.I: probability (0-1) of belonging to cluster VCS-I.</li>
-<li>VCS.II: probability (0-1) of belonging to cluster VCS-II.</li>
-<li>VCS.III: probability (0-1) of belonging to cluster VCS-III.</li>
-<li>VCS.IV: probability (0-1) of belonging to cluster VCS-IV.</li>
-<li>p_cluster: label (VCS-I, VCS-II, VCS-III, VCS-IV) indicating to
-    which cluster the profile belongs</li>
-</ol>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href=".." class="btn btn-neutral float-left" title="What is VIBES?"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../citation/" class="btn btn-neutral float-right" title="Citation">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../usecase/" class="btn btn-neutral float-right" title="Use case">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -204,7 +205,7 @@ original object:</p>
       <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../citation/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../usecase/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
