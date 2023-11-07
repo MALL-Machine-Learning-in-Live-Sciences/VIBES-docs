@@ -5,6 +5,7 @@ copyright: Copyright &copy; 2023 - 2024. MALL - Machine Learning for Live Scienc
 nav:
    - What is VIBES?: index.md
    - VIBES User Guide: userguide.md
+   - Use case: usecase.md
    - Citation: citation.md
    - Contact: contact.md
 theme: readthedocs

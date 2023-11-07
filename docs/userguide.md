@@ -62,9 +62,7 @@ tax_table(PRJNA208535)[1:5,6:7]
 #> ASV5 "Lactobacillus" NA
 ```
 
-Before running the package, the clinical data is made up of 25
-variables. Once the package is run, it will return 5 more variables that
-correspond to the probability and membership of each cluster.
+Before running the package, the clinical data is made up of 25 variables, the last six are:
 
 ``` r
 # Sample data has no info about clusters
@@ -75,9 +73,26 @@ sample_data(PRJNA208535)[1:5,20:25]
 #> SRR903842        0        0       0       NA       NA       NA
 #> SRR903941        0        0       0       NA       NA       NA
 #> SRR903945        0        0       0       NA       NA       NA
+```
+
+The main function of `VIBES` is `get_VIBES`. This function has two parameters:
+
+- object: 16S rRNA data in a phyloseq, matrix or a data frame. For matrix and data frames, samples in rows and species in columns.
+- column: only for phyloseq objects. Column number occupied by the taxonomic rank _Species_. Default value is the last column.
+
+``` r
 # Compute clusterization
-pseq_w_clusters <- get_clusters(object = PRJNA208535)
+pseq_w_clusters <- get_VIBES(object = PRJNA208535)
 #> Remember that the species names must be in the following format: Genus_species
+```
+
+`get_VIBES()` returns an object (`pseq_w_clusters`) of the same type as the input, but with 5 new columns.
+
+## Interpreting the results
+
+The object returned by the `get_VIBES()` function contains the probability (ranging from 0 to 1) of membership of each sample to each of the four clusters (`VCS.I`, `VCS.II`, `VCS.III` and `VCS.IV`), as well as a final column (`p_cluster`) with the assigned label.
+
+``` r
 # Check sample data of the new object 'pseq_w_clusters'
 sample_data(pseq_w_clusters)[1:5,25:30]
 #>           MENSTRU3        VCS.I    VCS.II      VCS.III       VCS.IV p_cluster
@@ -87,15 +102,3 @@ sample_data(pseq_w_clusters)[1:5,25:30]
 #> SRR903941       NA 4.992614e-26 1.0000000 1.369296e-10 8.586513e-09    VCS-II
 #> SRR903945       NA 3.820220e-24 0.9941218 1.527713e-07 5.878046e-03    VCS-II
 ```
-
-## Interpreting the results
-
-The `get_clusters()` function returns 5 variables/columns to the
-original object:
-
-1.  VCS.I: probability (0-1) of belonging to cluster VCS-I.
-2.  VCS.II: probability (0-1) of belonging to cluster VCS-II.
-3.  VCS.III: probability (0-1) of belonging to cluster VCS-III.
-4.  VCS.IV: probability (0-1) of belonging to cluster VCS-IV.
-5.  p_cluster: label (VCS-I, VCS-II, VCS-III, VCS-IV) indicating to
-    which cluster the profile belongs

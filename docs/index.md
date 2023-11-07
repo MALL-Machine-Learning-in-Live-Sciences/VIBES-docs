@@ -38,5 +38,5 @@ Mobiluncus_mulieris, Prevotella_buccalis and Sneathia_sanguinegens.
 - PRJNA302078: Vaginal bacterial communities of 65 Chinese women (Beijing) over 3 time points: pretreatment, one week after treatment and one month after treatment with metronidazole (201 16S raw samples on repo.), between the ages of 18 and 53. [Publication](https://doi.org/10.1038/srep26674)
 
 
-
+Moreover, we used PRJNA302078 to explore the relationship between our stratification methodology and the response to metronidazole antibiotic.
 
