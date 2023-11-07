@@ -29,7 +29,6 @@ data("PRJNA302078")
 pseq = tax_glom(PRJNA302078, taxrank = "Species")
 pseq@sam_data$visits = as.numeric(sapply(strsplit(pseq@sam_data$sample_alias, "D"), "[", 2))
 pseq = subset_samples(pseq, visits==0)
-print(pseq)
 ```
 
 
@@ -71,9 +70,8 @@ otus_vibes <- data.frame(
 
 ## Machine Learning prediction
 
-- Three classification tasks are defined:
+- Two classification tasks are defined:
   - `otus_task` uses PCA-transformed microbiome data to predict the _status_ variable with a positive class of _Cured_.
-  - `vibes_task` uses additional features from the `VIBES` model to predict the _status_ variable with a positive class of _Cured_.
   - `otus_vibes_task` combines the PCA-transformed microbiome data with `VIBES` features to predict the _status_ variable with a positive class of _Cured_.
 - The code uses the `classif.ranger` learner for classification tasks, configured to predict probabilities.
 - Cross-validation with 4 folds due to limited sample size is employed as the outer resampling strategy.
@@ -110,3 +108,5 @@ autoplot(bmr, measure = msr("classif.auc")) + ylim(c(0,1))
 ```
 
 ![](img/usecase.png)
+
+We can see how the inclusion of VIBES features outperform the prediction task.
