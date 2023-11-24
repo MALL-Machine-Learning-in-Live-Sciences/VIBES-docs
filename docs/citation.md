@@ -4,8 +4,9 @@ VIBES: a consensus subtyping of the vaginal microbiota reveals novel classificat
 
 ## Contributing
 
-We welcome contributions to `VIBES`. Please submit a pull request or
-open an issue on the GitHub repository.
+We welcome contributions to `VIBES`. 
+
+Please submit a pull request or open an issue on the [GitHub repository](https://github.com/MALL-Machine-Learning-in-Live-Sciences/VIBES).
 
 ## License
 
