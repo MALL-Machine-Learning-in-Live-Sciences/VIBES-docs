@@ -1,4 +1,10 @@
-# How to cite
+# User documentation for the VIBES - VagInal Bacterial subtyping using machine learning for Enhanced classification of bacterial vaginosiS - package.
+
+Source code for the analyses conducted in the development of VIBES is available [here](https://mall-machine-learning-in-live-sciences.github.io/VIBES-analysis/).
+
+R package is available [here](https://mall-machine-learning-in-live-sciences.github.io/VIBES/).
+
+## Citation
 
 Article is open access [here](https://www.csbj.org/article/S2001-0370(23)00465-8/fulltext).
 
@@ -21,13 +27,3 @@ pubstate = {published},
 tppubtype = {article}
 }
 ```
-
-## Contributing
-
-We welcome contributions to `VIBES`. 
-
-Please submit a pull request or open an issue on the [GitHub repository](https://github.com/MALL-Machine-Learning-in-Live-Sciences/VIBES).
-
-## License
-
-`VIBES` is released under the CC-BY-4.0 License.
