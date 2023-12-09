@@ -1,5 +1,7 @@
 # VIBES - VagInal Bacterial subtyping using machine learning for Enhanced classification of bacterial vaginosiS
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10309596.svg)](https://doi.org/10.5281/zenodo.10309596)
+
 The `VIBES` package computes clusters of biological significance from 20
 species from vaginal microbiome.
 
@@ -40,3 +42,6 @@ Mobiluncus_mulieris, Prevotella_buccalis and Sneathia_sanguinegens.
 
 Moreover, we used PRJNA302078 to explore the relationship between our stratification methodology and the response to metronidazole antibiotic.
 
+## Source code for the analyses conducted in the development of VIBES
+
+The source code for the analyses is available [here](https://github.com/MALL-Machine-Learning-in-Live-Sciences/VIBES-analysis)
